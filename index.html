@@ -54,7 +54,7 @@
       font-weight: 900;
       line-height: 1.2;
       letter-spacing: -0.01em;
-      color: #b05858;  /* romantic color for the main text (The Most Beautiful..., A Very Persistent...) */
+      color: #b05858;  /* romantic color for the main text */
       margin-bottom: 1.2rem;
       text-shadow: 2px 2px 0 rgba(255, 235, 235, 0.4);
       border-bottom: 2px solid #f8cfcf;
@@ -146,11 +146,11 @@
       letter-spacing: -0.5px;
     }
 
-    /* ---------- PAGE 3 REDESIGN (without GIF, without toast) ---------- */
+    /* ---------- PAGE 3 ---------- */
     #page3 {
       position: relative;
-      background: none;  /* remove card background, use image behind */
-      padding: 0;        /* let content span full card */
+      background: none;
+      padding: 0;
       overflow: hidden;
       border: none;
     }
@@ -166,7 +166,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: url('us.jpeg');  /* 736x736 square image */
+      background-image: url('us.jpeg');
       background-size: cover;
       background-position: center;
       filter: blur(6px) brightness(0.7);
@@ -210,7 +210,6 @@
     .valentine-message-new p {
       margin: 0.5rem 0;
     }
-    /* back button stays minimal */
     #back-home-new {
       margin-top: 1rem;
       background: rgba(255,255,255,0.2);
@@ -223,27 +222,25 @@
       border-color: white;
     }
 
-    /* flying hearts container – appears temporarily on page3 */
+    /* flying hearts container – from bottom */
     .hearts-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;  /* so clicks pass through */
+      pointer-events: none;
       z-index: 9999;
       overflow: hidden;
     }
     .heart {
       position: absolute;
       font-size: 1.5rem;
-      color: #ff9aa2; /* soft pink */
+      color: #ff9aa2;
       opacity: 0.8;
       animation: floatUp linear forwards;
       user-select: none;
-      /* start at bottom of screen */
-      top: 100%;  /* bottom edge */
-      transform: translateY(0); /* start exactly at bottom */
+      top: 100%;  /* start at bottom edge */
     }
     @keyframes floatUp {
       0% {
@@ -251,12 +248,11 @@
         opacity: 0.8;
       }
       100% {
-        transform: translateY(-120vh); /* move up far enough to disappear */
+        transform: translateY(-120vh);
         opacity: 0;
       }
     }
 
-    /* tiny heart accent */
     .tiny-heart {
       display: inline-block;
       font-size: 1.1rem;
@@ -264,7 +260,6 @@
       color: #d88a8a;
     }
 
-    /* responsiveness */
     @media (max-width: 550px) {
       .page { padding: 2rem 1.5rem; }
       .massive-text { font-size: 2rem; }
@@ -274,7 +269,7 @@
   </style>
 </head>
 <body>
-  <!-- PAGE 1 – FORMAL INQUIRY (colors swapped: labels soft, main text romantic) -->
+  <!-- PAGE 1 -->
   <div id="page1" class="page active">
     <h1 class="massive-text">
       <span class="label">To:</span> The Most Beautiful Woman in the World<br/><span class="label">From:</span> A Very Persistent Applicant
@@ -286,24 +281,23 @@
     <button id="tread-carefully" class="btn">Tread carefully</button>
   </div>
 
-  <!-- PAGE 2 – VALENTINE QUESTION + THE ELUSIVE NO (finite) -->
+  <!-- PAGE 2 -->
   <div id="page2" class="page">
     <h2>will you be my valentine?</h2>
     <div id="question-container">
       <button id="yes-btn" class="btn yes-btn">Yes</button>
       <button id="no-btn" class="btn no-btn" style="position: absolute; left: 150px; top: 0px;">no</button>
     </div>
-    <!-- updated footnote text -->
     <p style="color: #b28c8c; margin-top: 2rem; font-size: 0.9rem; font-style: italic; border-top: 1px solid #f0dbdb; padding-top: 1rem;">yeah good luck w that love</p>
   </div>
 
-  <!-- PAGE 3 – REDESIGNED with image bg, no GIF, no toast, flying hearts from bottom -->
+  <!-- PAGE 3 -->
   <div id="page3" class="page">
     <div class="page3-bg"></div>
     <div class="page3-overlay"></div>
     <div class="page3-content">
       <div class="valentine-message-new">
-        <p>Happy Valentine’s Day, Rachel</p>
+        <p>Happy Valentine’s Day, baby</p>
         <p>We can’t be together today and that sucks,<br>but this is temporary.</p>
         <p>You and I aren’t.</p>
         <p>I love you so much ❤️</p>
@@ -337,7 +331,7 @@
         "are you sure sure?",
         "you sure sure sure?",
         "it clearly isn't working love",
-        "(embarrassing part 2)",
+        "(embarrassing round 2)",
         "(embarrassing part 3)",
         "we talked about this",
         "wrong universe",
@@ -346,7 +340,7 @@
         "network issue",
         "is ts glitching?",
         "you aint tuff twin",
-        "(embarrassing part 4)",
+        "(embarrassing round 4)",
         "stop chasing a mid life",
         "you still here?",
         "not funny anymore love",
@@ -371,8 +365,8 @@
         "0.09",
         "0.05",
         "0.01",
-        "you asked for it",
-        "yes daddy i will"
+        "ok 0 ",
+        "yes daddy i will"      // last phrase (index 54)
       ];
 
       // ----------  DOM ELEMENTS ----------
@@ -388,66 +382,39 @@
       // ----------  NO BUTTON STATE ----------
       let phraseIndex = -1;
       let noTimeout = null;
-      let finalReached = false;
+      let finalReached = false;   // true when last phrase is triggered
 
-      // ----------  HEARTS CELEBRATION FUNCTION (now from bottom) ----------
-      function showFlyingHearts() {
-        // remove any existing hearts container
-        const oldContainer = document.querySelector('.hearts-container');
-        if (oldContainer) oldContainer.remove();
-
-        const heartsContainer = document.createElement('div');
-        heartsContainer.className = 'hearts-container';
-        document.body.appendChild(heartsContainer);
-
-        const numberOfHearts = 40;
-        for (let i = 0; i < numberOfHearts; i++) {
-          const heart = document.createElement('span');
-          heart.className = 'heart';
-          heart.innerHTML = '❤️';
-          // random left position
-          const left = Math.random() * 100;
-          // random size
-          const size = 0.8 + Math.random() * 1.5;
-          // random duration and delay
-          const duration = 1.8 + Math.random() * 2.2;
-          const delay = Math.random() * 0.8;
-          
-          heart.style.left = left + '%';
-          heart.style.fontSize = size + 'rem';
-          heart.style.animation = `floatUp ${duration}s ease-in ${delay}s forwards`;
-          
-          heartsContainer.appendChild(heart);
-        }
-
-        // remove container after all animations finish (longest ~4s)
-        setTimeout(() => {
-          if (heartsContainer.parentNode) heartsContainer.remove();
-        }, 5000);
-      }
-
-      // ----------  UTILITY: SHOW PAGE ----------
-      function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        const targetPage = document.getElementById(pageId);
-        if (targetPage) targetPage.classList.add('active');
-
-        // if page3 is shown, trigger flying hearts
-        if (pageId === 'page3') {
-          showFlyingHearts();
+      // ----------  HELPER: REACH FINAL STATE (no button disappears, yes button gets last text) ----------
+      function reachFinalState() {
+        finalReached = true;
+        // hide no button
+        noBtn.style.display = 'none';
+        // change yes button text to last phrase
+        yesBtn.textContent = phrases[phrases.length - 1]; // "yes daddy i will"
+        // clear any pending timeout
+        if (noTimeout) {
+          clearTimeout(noTimeout);
+          noTimeout = null;
         }
       }
 
-      // ----------  RESET NO BUTTON ----------
+      // ----------  RESET NO BUTTON (back to initial) ----------
       function resetNoButton() {
+        // clear timeout
         if (noTimeout) {
           clearTimeout(noTimeout);
           noTimeout = null;
         }
         finalReached = false;
         phraseIndex = -1;
+        // show no button again (in case it was hidden)
+        noBtn.style.display = 'inline-block';  // or '' but inline-block matches .btn
+        // reset its text
         noBtn.textContent = 'no';
+        // reset yes button text to original
+        yesBtn.textContent = 'Yes';
 
+        // position no button next to yes button
         const yesRect = yesBtn.getBoundingClientRect();
         const containerRect = container.getBoundingClientRect();
 
@@ -487,44 +454,93 @@
         noBtn.style.top = randomTop + 'px';
       }
 
-      // ----------  HANDLE NO INTERACTION ----------
+      // ----------  HEARTS CELEBRATION (from bottom) ----------
+      function showFlyingHearts() {
+        const oldContainer = document.querySelector('.hearts-container');
+        if (oldContainer) oldContainer.remove();
+
+        const heartsContainer = document.createElement('div');
+        heartsContainer.className = 'hearts-container';
+        document.body.appendChild(heartsContainer);
+
+        const numberOfHearts = 40;
+        for (let i = 0; i < numberOfHearts; i++) {
+          const heart = document.createElement('span');
+          heart.className = 'heart';
+          heart.innerHTML = '❤️';
+          const left = Math.random() * 100;
+          const size = 0.8 + Math.random() * 1.5;
+          const duration = 1.8 + Math.random() * 2.2;
+          const delay = Math.random() * 0.8;
+          
+          heart.style.left = left + '%';
+          heart.style.fontSize = size + 'rem';
+          heart.style.animation = `floatUp ${duration}s ease-in ${delay}s forwards`;
+          
+          heartsContainer.appendChild(heart);
+        }
+
+        setTimeout(() => {
+          if (heartsContainer.parentNode) heartsContainer.remove();
+        }, 5000);
+      }
+
+      // ----------  SHOW PAGE ----------
+      function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) targetPage.classList.add('active');
+
+        if (pageId === 'page3') {
+          showFlyingHearts();
+        }
+      }
+
+      // ----------  HANDLE NO INTERACTION (hover or click) – finite cycle with final removal ----------
       function handleNoInteraction(e) {
         if (e.type === 'click') {
           e.preventDefault();
           e.stopPropagation();
         }
 
+        // If final state already reached, no button is hidden; but if somehow called, ignore
         if (finalReached) {
-          if (e.type === 'click') {
-            showPage('page3');
-          }
+          // (should not happen because button hidden, but for safety)
           return;
         }
 
+        // Clear any pending revert timeout
         if (noTimeout) {
           clearTimeout(noTimeout);
           noTimeout = null;
         }
 
+        // Advance to next phrase
         phraseIndex++;
+        // Safety: shouldn't exceed last index
         if (phraseIndex >= phrases.length) {
           phraseIndex = phrases.length - 1;
         }
 
+        // Check if we just reached the last phrase
+        if (phraseIndex === phrases.length - 1) {
+          // Final state: remove no button, change yes button text
+          reachFinalState();
+          return; // done – no text change on no button, no movement
+        }
+
+        // Not final: update no button text, move it, schedule revert
         const newText = phrases[phraseIndex];
         noBtn.textContent = newText;
         moveNoButtonRandomly();
 
-        if (phraseIndex === phrases.length - 1) {
-          finalReached = true;
-        } else {
-          noTimeout = setTimeout(() => {
-            if (!finalReached) {
-              noBtn.textContent = 'no';
-            }
-            noTimeout = null;
-          }, 650);
-        }
+        // Schedule revert to "no" after 1000ms
+        noTimeout = setTimeout(() => {
+          if (!finalReached) {  // extra safety
+            noBtn.textContent = 'no';
+          }
+          noTimeout = null;
+        }, 650);
       }
 
       // ----------  EVENT LISTENERS ----------
@@ -547,7 +563,7 @@
 
       // Resize handler to keep button inside container
       window.addEventListener('resize', function() {
-        if (page2.classList.contains('active')) {
+        if (page2.classList.contains('active') && !finalReached) {
           const maxL = container.clientWidth - noBtn.offsetWidth;
           const maxT = container.clientHeight - noBtn.offsetHeight;
           let currentLeft = parseFloat(noBtn.style.left) || 0;
@@ -561,7 +577,7 @@
         }
       });
 
-      // Ensure reset when page2 becomes active (via any navigation)
+      // Override showPage to reset when page2 becomes active
       const originalShowPage = showPage;
       window.showPage = function(pageId) {
         originalShowPage(pageId);
@@ -570,7 +586,7 @@
         }
       };
 
-      // Rebind tread and back to use wrapped showPage
+      // Rebind navigation buttons to use wrapped showPage
       treadBtn.removeEventListener('click', treadBtn.click);
       backBtnNew.removeEventListener('click', backBtnNew.click);
       treadBtn.addEventListener('click', function() {
@@ -583,7 +599,7 @@
     })();
   </script>
 
-  <!-- one tiny heart in the corner – minimalistic romance -->
+  <!-- tiny heart in the corner -->
   <div style="position: fixed; bottom: 16px; right: 24px; opacity: 0.3; font-size: 1.6rem; color: #dbb6b6;">🕊️</div>
 </body>
 </html>
