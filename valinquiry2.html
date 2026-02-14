@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>will u be my valentine? · for ray</title>
+  <!-- minimalistic romantic vibe · Playfair + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* reset + base – soft, airy, not too many hearts */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #fff9f7 0%, #ffe9e5 100%);
+      font-family: 'Inter', sans-serif;
+      color: #2d2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* main card – minimal, clean, with subtle texture */
+    .page {
+      display: none;
+      max-width: 880px;
+      width: 100%;
+      background: rgba(255, 250, 245, 0.7);
+      backdrop-filter: blur(4px);
+      border-radius: 32px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.03), 0 0 0 1px rgba(255, 215, 215, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.2s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* massive romantic headline – colors swapped: labels now softer, main text romantic */
+    .massive-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 10vw, 3.6rem);
+      font-weight: 900;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: #b05858;  /* romantic color for the main text (The Most Beautiful..., A Very Persistent...) */
+      margin-bottom: 1.2rem;
+      text-shadow: 2px 2px 0 rgba(255, 235, 235, 0.4);
+      border-bottom: 2px solid #f8cfcf;
+      padding-bottom: 0.5rem;
+    }
+
+    .massive-text .label {
+      color: #4f3a3a;  /* softer, darker shade for the "To:" and "From:" labels */
+      font-weight: 900;
+    }
+
+    .smaller-text {
+      font-size: clamp(1.2rem, 5vw, 1.6rem);
+      font-weight: 350;
+      color: #584b4b;
+      margin-bottom: 2.5rem;
+      font-style: italic;
+      border-left: 3px solid #e5b7b7;
+      padding-left: 1.3rem;
+    }
+
+    /* button – clean, minimal, with gentle rounding */
+    .btn {
+      background: white;
+      border: 1.5px solid #dbb6b6;
+      padding: 0.85rem 2.2rem;
+      border-radius: 60px;
+      font-size: 1.25rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      color: #3e2c2c;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+      backdrop-filter: blur(2px);
+      letter-spacing: 0.3px;
+    }
+
+    .btn:hover {
+      background: #fff3f1;
+      border-color: #c98f8f;
+      color: #1f1b1b;
+      box-shadow: 0 8px 14px rgba(227, 162, 162, 0.1);
+    }
+
+    /* yes button – romantic accent (still minimal) */
+    .yes-btn {
+      background: #ffe8e5;
+      border-color: #dba1a1;
+      font-weight: 600;
+      margin-right: 1.5rem;
+    }
+
+    /* no button – absolutely positioned inside container, starts clean */
+    #no-btn {
+      background: #ffe8e5;
+      border-color: #c98f8f;
+      color: #3e2c2c;
+      transition: left 0.12s ease, top 0.12s ease; /* smooth runaway */
+      white-space: nowrap;
+      padding: 0.85rem 2rem;
+      z-index: 10;
+    }
+
+    /* question page layout container – relative for absolute no button */
+    #question-container {
+      position: relative;
+      min-height: 200px;
+      margin-top: 2rem;
+      padding: 0.8rem 0.2rem;
+      width: 100%;
+      background: rgba(255, 245, 240, 0.2);
+      border-radius: 24px;
+    }
+
+    /* static yes button stays in flow */
+    #yes-btn {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    /* page2 heading */
+    #page2 h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #563838;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.5px;
+    }
+
+    /* ---------- PAGE 3 REDESIGN (without GIF, without toast) ---------- */
+    #page3 {
+      position: relative;
+      background: none;  /* remove card background, use image behind */
+      padding: 0;        /* let content span full card */
+      overflow: hidden;
+      border: none;
+    }
+    #page3.active {
+      background: transparent;
+      backdrop-filter: none;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+    }
+    .page3-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('us.jpeg');  /* 736x736 square image */
+      background-size: cover;
+      background-position: center;
+      filter: blur(6px) brightness(0.7);
+      transform: scale(1.02);
+      z-index: 0;
+    }
+    .page3-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    }
+    .page3-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 500px;
+      padding: 2.5rem 2rem;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .valentine-message-new {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      line-height: 1.4;
+      text-align: center;
+      margin-bottom: 2rem;
+      max-width: 700px;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(2px);
+      padding: 1.5rem 2rem;
+      border-radius: 40px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .valentine-message-new p {
+      margin: 0.5rem 0;
+    }
+    /* back button stays minimal */
+    #back-home-new {
+      margin-top: 1rem;
+      background: rgba(255,255,255,0.2);
+      border-color: white;
+      color: white;
+      backdrop-filter: blur(5px);
+    }
+    #back-home-new:hover {
+      background: rgba(255,255,255,0.4);
+      border-color: white;
+    }
+
+    /* flying hearts container – appears temporarily on page3 */
+    .hearts-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;  /* so clicks pass through */
+      z-index: 9999;
+      overflow: hidden;
+    }
+    .heart {
+      position: absolute;
+      font-size: 1.5rem;
+      color: #ff9aa2; /* soft pink */
+      opacity: 0.8;
+      animation: floatUp linear forwards;
+      user-select: none;
+      /* start at bottom of screen */
+      top: 100%;  /* bottom edge */
+      transform: translateY(0); /* start exactly at bottom */
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-120vh); /* move up far enough to disappear */
+        opacity: 0;
+      }
+    }
+
+    /* tiny heart accent */
+    .tiny-heart {
+      display: inline-block;
+      font-size: 1.1rem;
+      margin-left: 6px;
+      color: #d88a8a;
+    }
+
+    /* responsiveness */
+    @media (max-width: 550px) {
+      .page { padding: 2rem 1.5rem; }
+      .massive-text { font-size: 2rem; }
+      .btn { padding: 0.7rem 1.5rem; }
+      .valentine-message-new { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- PAGE 1 – FORMAL INQUIRY (colors swapped: labels soft, main text romantic) -->
+  <div id="page1" class="page active">
+    <h1 class="massive-text">
+      <span class="label">To:</span> The Most Beautiful Woman in the World<br/><span class="label">From:</span> A Very Persistent Applicant
+      <span class="tiny-heart">𓆩♡𓆪</span>
+    </h1>
+    <p class="smaller-text">
+      Your response will determine the future emotional stability of one (1) long-distance boyfriend.
+    </p>
+    <button id="tread-carefully" class="btn">Tread carefully</button>
+  </div>
+
+  <!-- PAGE 2 – VALENTINE QUESTION + THE ELUSIVE NO (finite) -->
+  <div id="page2" class="page">
+    <h2>will you be my valentine?</h2>
+    <div id="question-container">
+      <button id="yes-btn" class="btn yes-btn">Yes</button>
+      <button id="no-btn" class="btn no-btn" style="position: absolute; left: 150px; top: 0px;">no</button>
+    </div>
+    <!-- updated footnote text -->
+    <p style="color: #b28c8c; margin-top: 2rem; font-size: 0.9rem; font-style: italic; border-top: 1px solid #f0dbdb; padding-top: 1rem;">yeah good luck w that love</p>
+  </div>
+
+  <!-- PAGE 3 – REDESIGNED with image bg, no GIF, no toast, flying hearts from bottom -->
+  <div id="page3" class="page">
+    <div class="page3-bg"></div>
+    <div class="page3-overlay"></div>
+    <div class="page3-content">
+      <div class="valentine-message-new">
+        <p>Happy Valentine’s Day, baby</p>
+        <p>We can’t be together today and that sucks,<br>but this is temporary.</p>
+        <p>You and I aren’t.</p>
+        <p>I love you so much ❤️</p>
+      </div>
+      <button id="back-home-new" class="btn">← back to start</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      // ----------  THE SACRED LIST OF PHRASES (finite, in given order) ----------
+      const phrases = [
+        "that was embarassing",
+        "you smiled",
+        "idts",
+        "go again?",
+        "error 404 : nuh uh",
+        "still embarassing btw",
+        "i can do this all day",
+        "you're adorable",
+        "other button lookin interesting no?",
+        "focus.",
+        "not a question btw",
+        "you done?",
+        "zero aura",
+        "negative aura actually",
+        "wrong answer champ",
+        "are you sure",
+        "are you sure sure?",
+        "you sure sure sure?",
+        "it clearly isn't working love",
+        "(embarrassing part 2)",
+        "(embarrassing part 3)",
+        "we talked about this",
+        "wrong universe",
+        "why are you like this",
+        "you love me",
+        "network issue",
+        "is ts glitching?",
+        "you aint tuff twin",
+        "(embarrassing part 4)",
+        "stop chasing a mid life",
+        "you still here?",
+        "not funny anymore love",
+        "alr thats enough",
+        "you can stop now",
+        "i can remove this option btw",
+        "dont force me",
+        "ur forcing me love",
+        "you love me come on",
+        "alright im doing it ",
+        "last try ",
+        "final try ",
+        "5",
+        "4",
+        "3",
+        "2",
+        "1",
+        "0.5",
+        "0.25",
+        "0.2",
+        "0.1",
+        "0.09",
+        "0.05",
+        "0.01",
+        "you asked for it",
+        "yes daddy i will"
+      ];
+
+      // ----------  DOM ELEMENTS ----------
+      const page1 = document.getElementById('page1');
+      const page2 = document.getElementById('page2');
+      const page3 = document.getElementById('page3');
+      const treadBtn = document.getElementById('tread-carefully');
+      const yesBtn = document.getElementById('yes-btn');
+      const noBtn = document.getElementById('no-btn');
+      const backBtnNew = document.getElementById('back-home-new');
+      const container = document.getElementById('question-container');
+
+      // ----------  NO BUTTON STATE ----------
+      let phraseIndex = -1;
+      let noTimeout = null;
+      let finalReached = false;
+
+      // ----------  HEARTS CELEBRATION FUNCTION (now from bottom) ----------
+      function showFlyingHearts() {
+        // remove any existing hearts container
+        const oldContainer = document.querySelector('.hearts-container');
+        if (oldContainer) oldContainer.remove();
+
+        const heartsContainer = document.createElement('div');
+        heartsContainer.className = 'hearts-container';
+        document.body.appendChild(heartsContainer);
+
+        const numberOfHearts = 40;
+        for (let i = 0; i < numberOfHearts; i++) {
+          const heart = document.createElement('span');
+          heart.className = 'heart';
+          heart.innerHTML = '❤️';
+          // random left position
+          const left = Math.random() * 100;
+          // random size
+          const size = 0.8 + Math.random() * 1.5;
+          // random duration and delay
+          const duration = 1.8 + Math.random() * 2.2;
+          const delay = Math.random() * 0.8;
+          
+          heart.style.left = left + '%';
+          heart.style.fontSize = size + 'rem';
+          heart.style.animation = `floatUp ${duration}s ease-in ${delay}s forwards`;
+          
+          heartsContainer.appendChild(heart);
+        }
+
+        // remove container after all animations finish (longest ~4s)
+        setTimeout(() => {
+          if (heartsContainer.parentNode) heartsContainer.remove();
+        }, 5000);
+      }
+
+      // ----------  UTILITY: SHOW PAGE ----------
+      function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) targetPage.classList.add('active');
+
+        // if page3 is shown, trigger flying hearts
+        if (pageId === 'page3') {
+          showFlyingHearts();
+        }
+      }
+
+      // ----------  RESET NO BUTTON ----------
+      function resetNoButton() {
+        if (noTimeout) {
+          clearTimeout(noTimeout);
+          noTimeout = null;
+        }
+        finalReached = false;
+        phraseIndex = -1;
+        noBtn.textContent = 'no';
+
+        const yesRect = yesBtn.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+
+        let defaultLeft = yesRect.right - containerRect.left + 14;
+        let defaultTop = yesRect.top - containerRect.top;
+
+        const maxLeft = container.clientWidth - noBtn.offsetWidth;
+        const maxTop = container.clientHeight - noBtn.offsetHeight;
+        if (defaultLeft > maxLeft) defaultLeft = Math.max(0, maxLeft - 10);
+        if (defaultLeft < 0) defaultLeft = 20;
+        if (defaultTop > maxTop) defaultTop = 0;
+        if (defaultTop < 0) defaultTop = 0;
+
+        noBtn.style.left = defaultLeft + 'px';
+        noBtn.style.top = defaultTop + 'px';
+      }
+
+      // ----------  MOVE NO BUTTON RANDOMLY ----------
+      function moveNoButtonRandomly() {
+        if (!container || !noBtn) return;
+
+        const containerW = container.clientWidth;
+        const containerH = container.clientHeight;
+        const btnW = noBtn.offsetWidth;
+        const btnH = noBtn.offsetHeight;
+
+        const maxLeft = Math.max(0, containerW - btnW);
+        const maxTop = Math.max(0, containerH - btnH);
+
+        let randomLeft = Math.floor(Math.random() * (maxLeft + 1));
+        let randomTop = Math.floor(Math.random() * (maxTop + 1));
+
+        randomLeft = Math.min(Math.max(randomLeft, 0), maxLeft);
+        randomTop = Math.min(Math.max(randomTop, 0), maxTop);
+
+        noBtn.style.left = randomLeft + 'px';
+        noBtn.style.top = randomTop + 'px';
+      }
+
+      // ----------  HANDLE NO INTERACTION ----------
+      function handleNoInteraction(e) {
+        if (e.type === 'click') {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        if (finalReached) {
+          if (e.type === 'click') {
+            showPage('page3');
+          }
+          return;
+        }
+
+        if (noTimeout) {
+          clearTimeout(noTimeout);
+          noTimeout = null;
+        }
+
+        phraseIndex++;
+        if (phraseIndex >= phrases.length) {
+          phraseIndex = phrases.length - 1;
+        }
+
+        const newText = phrases[phraseIndex];
+        noBtn.textContent = newText;
+        moveNoButtonRandomly();
+
+        if (phraseIndex === phrases.length - 1) {
+          finalReached = true;
+        } else {
+          noTimeout = setTimeout(() => {
+            if (!finalReached) {
+              noBtn.textContent = 'no';
+            }
+            noTimeout = null;
+          }, 650);
+        }
+      }
+
+      // ----------  EVENT LISTENERS ----------
+      treadBtn.addEventListener('click', function() {
+        showPage('page2');
+        resetNoButton();
+      });
+
+      yesBtn.addEventListener('click', function() {
+        showPage('page3');
+      });
+
+      backBtnNew.addEventListener('click', function() {
+        showPage('page1');
+      });
+
+      noBtn.addEventListener('mouseenter', handleNoInteraction);
+      noBtn.addEventListener('click', handleNoInteraction);
+      noBtn.addEventListener('mousedown', (e) => e.preventDefault());
+
+      // Resize handler to keep button inside container
+      window.addEventListener('resize', function() {
+        if (page2.classList.contains('active')) {
+          const maxL = container.clientWidth - noBtn.offsetWidth;
+          const maxT = container.clientHeight - noBtn.offsetHeight;
+          let currentLeft = parseFloat(noBtn.style.left) || 0;
+          let currentTop = parseFloat(noBtn.style.top) || 0;
+          let newLeft = Math.min(Math.max(currentLeft, 0), maxL);
+          let newTop = Math.min(Math.max(currentTop, 0), maxT);
+          if (newLeft !== currentLeft || newTop !== currentTop) {
+            noBtn.style.left = newLeft + 'px';
+            noBtn.style.top = newTop + 'px';
+          }
+        }
+      });
+
+      // Ensure reset when page2 becomes active (via any navigation)
+      const originalShowPage = showPage;
+      window.showPage = function(pageId) {
+        originalShowPage(pageId);
+        if (pageId === 'page2') {
+          setTimeout(resetNoButton, 10);
+        }
+      };
+
+      // Rebind tread and back to use wrapped showPage
+      treadBtn.removeEventListener('click', treadBtn.click);
+      backBtnNew.removeEventListener('click', backBtnNew.click);
+      treadBtn.addEventListener('click', function() {
+        window.showPage('page2');
+        resetNoButton();
+      });
+      backBtnNew.addEventListener('click', function() {
+        window.showPage('page1');
+      });
+    })();
+  </script>
+
+  <!-- one tiny heart in the corner – minimalistic romance -->
+  <div style="position: fixed; bottom: 16px; right: 24px; opacity: 0.3; font-size: 1.6rem; color: #dbb6b6;">🕊️</div>
+</body>
+</html>
